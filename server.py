@@ -3,7 +3,7 @@ import json
 import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 HOST = "0.0.0.0"
 
 # Setu AI Logic Engine
