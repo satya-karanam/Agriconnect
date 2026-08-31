@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriConnect — Direct Farm to Market Platform</title>
+  <meta name="description" content="Right Farmer. Right Buyer. Right Price. Right Time. AgriConnect directly links farmers with buyers through smart price intelligence and logistics." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              DEFAULT: '#0b1329',
+              dark: '#070c1b',
+              card: '#111c3a',
+              cardHover: '#182649',
+              border: '#253866',
+              accent: '#1e2d54'
+            },
+            agri: {
+              DEFAULT: '#16a34a',
+              dark: '#15803d',
+              emerald: '#10b981',
+              light: '#22c55e',
+              mint: '#dcfce7',
+              gold: '#eab308',
+              amber: '#f59e0b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- React 18 & Babel Standalone -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* Custom Scrollbars & Animations */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #16a34a;
+      border-radius: 4px;
+    }
+    .pulse-glow {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    .glass-card {
+      background: rgba(17, 28, 58, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(37, 56, 102, 0.6);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+  <div id="root"></div>
+
+  <!-- Load Data and Scripts -->
+  <script src="/translations.js"></script>
+  <script src="/mockData.js"></script>
+  <script type="text/babel" src="/app.jsx"></script>
+</body>
+</html>
