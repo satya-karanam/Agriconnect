@@ -867,3 +867,90 @@ const mockPriceTrends = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   }
 };
+
+const mockSetuForecastMatrix = {
+  "Visakhapatnam": {
+    "Kharif 2027": [
+      { crop: "Tomato", icon: "🍅", demandPct: 92, demandLevel: "HIGH", priceTrend: "↑ (+18%)", priceTrendType: "up", score: 88, bestFit: "High Volume Buyers Nearby" },
+      { crop: "Onion", icon: "🧅", demandPct: 85, demandLevel: "HIGH", priceTrend: "→ (+4%)", priceTrendType: "flat", score: 82, bestFit: "Urban Retail Hubs" },
+      { crop: "Hot Chilli", icon: "🌶️", demandPct: 68, demandLevel: "MEDIUM", priceTrend: "↑ (+12%)", priceTrendType: "up", score: 74, bestFit: "Spice Exporters" },
+      { crop: "Potato", icon: "🥔", demandPct: 42, demandLevel: "LOW", priceTrend: "↓ (-6%)", priceTrendType: "down", score: 52, bestFit: "Cold Storage Hold" }
+    ],
+    "Rabi 2026-27": [
+      { crop: "Tomato", icon: "🍅", demandPct: 84, demandLevel: "HIGH", priceTrend: "↑ (+10%)", priceTrendType: "up", score: 81, bestFit: "Local Processing Hubs" },
+      { crop: "Onion", icon: "🧅", demandPct: 90, demandLevel: "HIGH", priceTrend: "↑ (+15%)", priceTrendType: "up", score: 86, bestFit: "Wholesale Mandi Exporters" },
+      { crop: "Brinjal", icon: "🍆", demandPct: 65, demandLevel: "MEDIUM", priceTrend: "→ (+2%)", priceTrendType: "flat", score: 70, bestFit: "District Fresh Markets" },
+      { crop: "Potato", icon: "🥔", demandPct: 78, demandLevel: "HIGH", priceTrend: "↑ (+8%)", priceTrendType: "up", score: 76, bestFit: "Retail Chain Stores" }
+    ],
+    "Zaid 2027": [
+      { crop: "Cucumber", icon: "🥒", demandPct: 94, demandLevel: "HIGH", priceTrend: "↑ (+22%)", priceTrendType: "up", score: 91, bestFit: "Summer Juice & Salad Supply" },
+      { crop: "Tomato", icon: "🍅", demandPct: 75, demandLevel: "MEDIUM", priceTrend: "→ (+5%)", priceTrendType: "flat", score: 73, bestFit: "Urban Retail Hubs" },
+      { crop: "Bitter Gourd", icon: "🥒", demandPct: 62, demandLevel: "MEDIUM", priceTrend: "↑ (+7%)", priceTrendType: "up", score: 68, bestFit: "Local Mandis" }
+    ]
+  },
+  "Krishna": {
+    "Kharif 2027": [
+      { crop: "Tomato", icon: "🍅", demandPct: 89, demandLevel: "HIGH", priceTrend: "↑ (+15%)", priceTrendType: "up", score: 85, bestFit: "Vijayawada Wholesale Hub" },
+      { crop: "Onion", icon: "🧅", demandPct: 82, demandLevel: "HIGH", priceTrend: "→ (+3%)", priceTrendType: "flat", score: 80, bestFit: "Coastal Retail Co-op" },
+      { crop: "Hot Chilli", icon: "🌶️", demandPct: 72, demandLevel: "MEDIUM", priceTrend: "↑ (+9%)", priceTrendType: "up", score: 76, bestFit: "Regional Processors" },
+      { crop: "Potato", icon: "🥔", demandPct: 45, demandLevel: "LOW", priceTrend: "↓ (-4%)", priceTrendType: "down", score: 55, bestFit: "Local Storage" }
+    ]
+  },
+  "Guntur": {
+    "Kharif 2027": [
+      { crop: "Hot Chilli", icon: "🌶️", demandPct: 96, demandLevel: "VERY HIGH", priceTrend: "↑ (+24%)", priceTrendType: "up", score: 95, bestFit: "Mirchi Yard Export Clusters" },
+      { crop: "Tomato", icon: "🍅", demandPct: 86, demandLevel: "HIGH", priceTrend: "↑ (+14%)", priceTrendType: "up", score: 84, bestFit: "Processing Plants" },
+      { crop: "Onion", icon: "🧅", demandPct: 78, demandLevel: "MEDIUM", priceTrend: "→ (+5%)", priceTrendType: "flat", score: 77, bestFit: "Urban Markets" }
+    ]
+  },
+  "East Godavari": {
+    "Kharif 2027": [
+      { crop: "Tomato", icon: "🍅", demandPct: 90, demandLevel: "HIGH", priceTrend: "↑ (+16%)", priceTrendType: "up", score: 87, bestFit: "Rajahmundry & Kakinada Hubs" },
+      { crop: "Onion", icon: "🧅", demandPct: 88, demandLevel: "HIGH", priceTrend: "↑ (+11%)", priceTrendType: "up", score: 84, bestFit: "Coastal Traders" }
+    ]
+  }
+};
+
+const mockSetuDemandTrends = {
+  Tomato: {
+    labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+    demand: [320, 350, 410, 480, 520, 490, 440],
+    supply: [280, 290, 310, 330, 340, 350, 360],
+    peakDays: "Day 4 - Day 5 (Thu-Fri)",
+    deficitWindow: "Day 3 to Day 5 (Deficit: ~180 Tons)",
+    avgPrice: "₹28 - ₹34/kg"
+  },
+  Onion: {
+    labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+    demand: [400, 420, 430, 450, 470, 460, 440],
+    supply: [380, 390, 400, 410, 415, 420, 425],
+    peakDays: "Day 5 (Friday)",
+    deficitWindow: "Day 4 to Day 6 (Deficit: ~55 Tons)",
+    avgPrice: "₹32 - ₹36/kg"
+  },
+  Brinjal: {
+    labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+    demand: [150, 160, 180, 200, 220, 210, 190],
+    supply: [160, 170, 185, 190, 200, 205, 200],
+    peakDays: "Day 5 (Friday)",
+    deficitWindow: "Day 4 to Day 5 (Minor Deficit: ~20 Tons)",
+    avgPrice: "₹22 - ₹26/kg"
+  },
+  Capsicum: {
+    labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+    demand: [180, 200, 230, 270, 300, 280, 240],
+    supply: [140, 150, 160, 170, 180, 190, 195],
+    peakDays: "Day 4 - Day 5",
+    deficitWindow: "Day 3 to Day 6 (High Deficit: ~120 Tons)",
+    avgPrice: "₹42 - ₹50/kg"
+  },
+  Ginger: {
+    labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+    demand: [90, 95, 110, 125, 140, 135, 120],
+    supply: [85, 90, 92, 95, 98, 100, 102],
+    peakDays: "Day 5 (Friday)",
+    deficitWindow: "Day 4 to Day 6 (Deficit: ~42 Tons)",
+    avgPrice: "₹85 - ₹95/kg"
+  }
+};
+

@@ -340,10 +340,11 @@ function App() {
     localStorage.setItem('agri_role', newRole);
     localStorage.setItem('agri_user_role', newRole);
     setSelectedRole(newRole === 'farmer' ? 'Farmer' : 'Buyer');
+    setIsSetuOpen(false);
     if (newRole === 'farmer') {
       setActiveTab('farmer_dashboard');
     } else {
-      setActiveTab('buyer_dashboard');
+      setActiveTab('marketplace');
     }
   };
 
@@ -361,6 +362,11 @@ function App() {
     setAuthStep("details");
     setOtpDigits(["", "", "", ""]);
     setToastMessage(`Welcome back, ${name}! Logged in as ${roleStr}.`);
+    if (roleKey === 'buyer') {
+      setActiveTab('marketplace');
+    } else {
+      setActiveTab('farmer_dashboard');
+    }
   };
 
   const handleLogout = () => {
@@ -373,13 +379,13 @@ function App() {
 
   // Route Security Guard
   useEffect(() => {
-    const farmerOnlyTabs = ['farmer_dashboard', 'sell_produce', 'my_listings', 'find_buyers'];
+    const farmerOnlyTabs = ['farmer_dashboard', 'sell_produce', 'my_listings', 'find_buyers', 'setu_portal', 'market_demand'];
     const buyerOnlyTabs = ['buyer_dashboard', 'cart', 'checkout'];
 
     if (userRole === 'farmer' && buyerOnlyTabs.includes(activeTab)) {
       setActiveTab('farmer_dashboard');
     } else if (userRole === 'buyer' && farmerOnlyTabs.includes(activeTab)) {
-      setActiveTab('buyer_dashboard');
+      setActiveTab('marketplace');
     }
   }, [userRole, activeTab]);
 
@@ -554,7 +560,7 @@ function App() {
             <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
               
               {userRole === 'farmer' ? (
-                // FARMER NAVIGATION
+                // FARMER / FPO NAVIGATION
                 <>
                   <button 
                     onClick={() => setActiveTab('farmer_dashboard')}
@@ -589,32 +595,26 @@ function App() {
                     🤝 {t.nav.findBuyers}
                   </button>
                   <button 
-                    onClick={() => setActiveTab('price_intel')}
-                    className={`px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
-                      activeTab === 'price_intel' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
-                  >
-                    💰 {t.nav.todayPrices}
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('market_demand')}
-                    className={`px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
-                      activeTab === 'market_demand' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
-                  >
-                    📈 {t.nav.marketDemand}
-                  </button>
-                  <button 
                     onClick={() => setActiveTab('logistics')}
                     className={`px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
                       activeTab === 'logistics' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
-                    🚚 {t.nav.trackPickup}
+                    🚚 {t.nav.logistics}
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('setu_portal')}
+                    className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      activeTab === 'setu_portal'
+                        ? 'bg-emerald-600 text-white shadow-sm'
+                        : 'bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100'
+                    }`}
+                  >
+                    🌱 SETU Crop Advisor
                   </button>
                 </>
               ) : (
-                // BUYER / CUSTOMER NAVIGATION
+                // CUSTOMER / BUYER NAVIGATION
                 <>
                   <button 
                     onClick={() => setActiveTab('home')}
@@ -630,7 +630,7 @@ function App() {
                       activeTab === 'marketplace' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
-                    🛒 {t.nav.marketplace}
+                    🛒 Marketplace (27 Crops)
                   </button>
                   <button 
                     onClick={() => setActiveTab('price_intel')}
@@ -638,7 +638,7 @@ function App() {
                       activeTab === 'price_intel' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
-                    📊 {t.nav.priceIntel}
+                    💰 Price Intelligence
                   </button>
                   <button 
                     onClick={() => setActiveTab('logistics')}
@@ -649,22 +649,19 @@ function App() {
                     📦 {t.nav.myOrders}
                   </button>
                   <button 
-                    onClick={() => setActiveTab('wishlist')}
-                    className={`px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
-                      activeTab === 'wishlist' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    }`}
+                    onClick={() => setIsCartOpen(true)}
+                    className="px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                   >
-                    ♡ {t.nav.wishlist}
+                    🛍️ {t.nav.cart}
+                  </button>
+                  <button 
+                    onClick={() => setIsSetuOpen(true)}
+                    className="px-3.5 py-2 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition-all flex items-center gap-1.5"
+                  >
+                    ✨ Ask SETU
                   </button>
                 </>
               )}
-
-              <button 
-                onClick={() => setIsSetuOpen(true)}
-                className="px-3 py-2 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors flex items-center gap-1"
-              >
-                ✨ {t.nav.setu}
-              </button>
             </div>
 
             {/* RIGHT UTILITIES: LANGUAGE, NOTIFICATIONS, CART, PROFILE */}
@@ -838,7 +835,10 @@ function App() {
               <span>🤝</span> Buyers
             </button>
             <button onClick={() => setActiveTab('logistics')} className="flex flex-col items-center">
-              <span>🚚</span> Pickup
+              <span>🚚</span> Logistics
+            </button>
+            <button onClick={() => setActiveTab('setu_portal')} className="flex flex-col items-center text-emerald-700 font-bold">
+              <span>🌱</span> Advisor
             </button>
           </>
         ) : (
@@ -850,10 +850,13 @@ function App() {
               <span>🛒</span> Market
             </button>
             <button onClick={() => setActiveTab('price_intel')} className="flex flex-col items-center">
-              <span>📊</span> Prices
+              <span>💰</span> Prices
             </button>
             <button onClick={() => setActiveTab('logistics')} className="flex flex-col items-center">
               <span>📦</span> Orders
+            </button>
+            <button onClick={() => setIsSetuOpen(true)} className="flex flex-col items-center text-emerald-700 font-bold">
+              <span>✨</span> SETU
             </button>
           </>
         )}
@@ -964,9 +967,39 @@ function App() {
           />
         )}
 
-        {activeTab === 'market_demand' && (
-          <MarketDemandView 
+        {userRole === 'farmer' && activeTab === 'setu_portal' && (
+          <SetuPortalView 
             t={t}
+            setActiveTab={setActiveTab}
+            setIsSetuOpen={setIsSetuOpen}
+            userRole={userRole}
+            userName={userName}
+            setuMessages={setuMessages}
+            setSetuMessages={setSetuMessages}
+            setuInput={setuInput}
+            setSetuInput={setSetuInput}
+            onSendMessage={handleSendSetuMessage}
+            isListening={isListening}
+            onVoiceInput={handleVoiceInput}
+            initialSubTab="advisor"
+          />
+        )}
+
+        {userRole === 'farmer' && activeTab === 'market_demand' && (
+          <SetuPortalView 
+            t={t}
+            setActiveTab={setActiveTab}
+            setIsSetuOpen={setIsSetuOpen}
+            userRole={userRole}
+            userName={userName}
+            setuMessages={setuMessages}
+            setSetuMessages={setSetuMessages}
+            setuInput={setuInput}
+            setSetuInput={setSetuInput}
+            onSendMessage={handleSendSetuMessage}
+            isListening={isListening}
+            onVoiceInput={handleVoiceInput}
+            initialSubTab="demand_trends"
           />
         )}
 
@@ -2884,58 +2917,745 @@ function PriceIntelligenceView({ t }) {
 /* =========================================================================
    VIEW 9: MARKET DEMAND VIEW (UNIFIED LIGHT THEME)
    ========================================================================= */
-function MarketDemandView({ t }) {
-  const demandCrops = [
-    { name: 'Tomato', level: 'HIGH', badge: '🔥 HIGH DEMAND', color: 'text-red-700 bg-red-50 border-red-200', supply: 'Deficit expected 200 tons' },
-    { name: 'Guntur Red Chilli', level: 'VERY HIGH', badge: '🔥 VERY HIGH', color: 'text-red-700 bg-red-50 border-red-200', supply: 'Deficit expected 50 tons' },
-    { name: 'Potato', level: 'MEDIUM', badge: '🟢 BALANCED', color: 'text-emerald-700 bg-emerald-50 border-emerald-200', supply: 'Sufficient supply in Krishna district' },
-    { name: 'Spinach (Palak)', level: 'HIGH', badge: '🔥 HIGH DEMAND', color: 'text-red-700 bg-red-50 border-red-200', supply: 'High local retail demand' }
+/* =========================================================================
+   SETU AI AGRICULTURAL DECISION SUPPORT & DEMAND FORECASTING PORTAL
+   ========================================================================= */
+function SetuPortalView({ 
+  t, 
+  setActiveTab, 
+  setIsSetuOpen,
+  userRole, 
+  userName,
+  setuMessages,
+  setSetuMessages,
+  setuInput,
+  setSetuInput,
+  onSendMessage,
+  isListening,
+  onVoiceInput,
+  initialSubTab = 'advisor'
+}) {
+  const [subTab, setSubTab] = useState(initialSubTab); // 'advisor', 'demand_trends', 'chat'
+
+  // Tab 1 Filters
+  const [selectedState, setSelectedState] = useState('Andhra Pradesh');
+  const [selectedDistrict, setSelectedDistrict] = useState('Visakhapatnam');
+  const [selectedSeason, setSelectedSeason] = useState('Kharif 2027');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [explainOpen, setExplainOpen] = useState(true);
+  const [faqOpen, setFaqOpen] = useState(true);
+
+  // Tab 2 Filters
+  const [selectedCommodity, setSelectedCommodity] = useState('Tomato');
+  const [timeHorizon, setTimeHorizon] = useState('7day'); // '7day' or '30day'
+
+  // Chart ref for Tab 2
+  const demandChartRef = useRef(null);
+  const demandChartInstance = useRef(null);
+
+  // Handle Analyze Action
+  const handleAnalyze = () => {
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      setIsAnalyzing(false);
+    }, 600);
+  };
+
+  // Get current forecast matrix items
+  const districtData = (typeof mockSetuForecastMatrix !== 'undefined' && mockSetuForecastMatrix[selectedDistrict]) 
+    ? mockSetuForecastMatrix[selectedDistrict] 
+    : (typeof mockSetuForecastMatrix !== 'undefined' ? mockSetuForecastMatrix['Visakhapatnam'] : {});
+  
+  const matrixItems = (districtData && districtData[selectedSeason]) 
+    ? districtData[selectedSeason] 
+    : (districtData && districtData['Kharif 2027']) 
+    ? districtData['Kharif 2027'] 
+    : [
+        { crop: "Tomato", icon: "🍅", demandPct: 92, demandLevel: "HIGH", priceTrend: "↑ (+18%)", priceTrendType: "up", score: 88, bestFit: "High Volume Buyers Nearby" },
+        { crop: "Onion", icon: "🧅", demandPct: 85, demandLevel: "HIGH", priceTrend: "→ (+4%)", priceTrendType: "flat", score: 82, bestFit: "Urban Retail Hubs" },
+        { crop: "Hot Chilli", icon: "🌶️", demandPct: 68, demandLevel: "MEDIUM", priceTrend: "↑ (+12%)", priceTrendType: "up", score: 74, bestFit: "Spice Exporters" },
+        { crop: "Potato", icon: "🥔", demandPct: 42, demandLevel: "LOW", priceTrend: "↓ (-6%)", priceTrendType: "down", score: 52, bestFit: "Cold Storage Hold" }
+      ];
+
+  // Tab 2 Chart.js render
+  const commodityTrend = (typeof mockSetuDemandTrends !== 'undefined' && mockSetuDemandTrends[selectedCommodity])
+    ? mockSetuDemandTrends[selectedCommodity]
+    : {
+        labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
+        demand: [320, 350, 410, 480, 520, 490, 440],
+        supply: [280, 290, 310, 330, 340, 350, 360],
+        peakDays: "Day 4 - Day 5 (Thu-Fri)",
+        deficitWindow: "Day 3 to Day 5 (Deficit: ~180 Tons)",
+        avgPrice: "₹28 - ₹34/kg"
+      };
+
+  useEffect(() => {
+    if (subTab !== 'demand_trends') return;
+    if (!demandChartRef.current) return;
+    if (typeof window.Chart === 'undefined') return;
+
+    if (demandChartInstance.current) {
+      demandChartInstance.current.destroy();
+    }
+
+    const ctx = demandChartRef.current.getContext('2d');
+    
+    const gradientDemand = ctx.createLinearGradient(0, 0, 0, 300);
+    gradientDemand.addColorStop(0, 'rgba(239, 68, 68, 0.25)');
+    gradientDemand.addColorStop(1, 'rgba(239, 68, 68, 0.01)');
+
+    const gradientSupply = ctx.createLinearGradient(0, 0, 0, 300);
+    gradientSupply.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+    gradientSupply.addColorStop(1, 'rgba(16, 185, 129, 0.01)');
+
+    const labels = timeHorizon === '30day' 
+      ? ["Week 1", "Week 2", "Week 3", "Week 4"] 
+      : commodityTrend.labels;
+    
+    const demandValues = timeHorizon === '30day' 
+      ? [2400, 3100, 3800, 3200] 
+      : commodityTrend.demand;
+    
+    const supplyValues = timeHorizon === '30day' 
+      ? [2100, 2300, 2500, 2600] 
+      : commodityTrend.supply;
+
+    demandChartInstance.current = new window.Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: `Forecasted Local Demand (${selectedCommodity})`,
+            data: demandValues,
+            borderColor: '#ef4444',
+            backgroundColor: gradientDemand,
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointBackgroundColor: '#ef4444',
+            pointRadius: 5
+          },
+          {
+            label: `Expected Local Supply (${selectedCommodity})`,
+            data: supplyValues,
+            borderColor: '#10b981',
+            backgroundColor: gradientSupply,
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointBackgroundColor: '#10b981',
+            pointRadius: 5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#334155',
+              font: { family: 'Inter', weight: '600', size: 12 }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#0f172a',
+            titleColor: '#ffffff',
+            bodyFont: { weight: 'bold' }
+          }
+        },
+        scales: {
+          x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { weight: '600' } } },
+          y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { weight: '600' } } }
+        }
+      }
+    });
+
+    return () => {
+      if (demandChartInstance.current) {
+        demandChartInstance.current.destroy();
+      }
+    };
+  }, [subTab, selectedCommodity, timeHorizon]);
+
+  // Chat message list
+  const chatMessagesList = (setuMessages && setuMessages.length > 0) 
+    ? setuMessages 
+    : [
+        { id: 1, sender: 'setu', text: "Hello! I am SETU, your AI Agricultural Advisor. How can I assist your crop planning or market demand queries today?" }
+      ];
+
+  const quickPrompts = [
+    "🌾 What is the expected price for Tomato next month?",
+    "🚜 Which fertilizer is optimal for Kharif season?",
+    "📦 How do I join a bulk buyer procurement pool?"
   ];
 
   return (
     <div className="bg-slate-50 min-h-screen pb-16 pt-8 text-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
-        <div>
-          <span className="bg-red-50 text-red-700 border border-red-200 text-xs font-bold px-3 py-1 rounded-full uppercase">
-            📈 Regional Market Demand Forecasting
-          </span>
-          <h1 className="font-display font-extrabold text-3xl text-slate-900 mt-2">
-            {t.marketDemand.title}
-          </h1>
-          <p className="text-xs text-slate-500 mt-1 font-medium">
-            {t.marketDemand.subtitle}
-          </p>
+        {/* PORTAL HEADER & TITLE */}
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>✨ SETU AI Intelligence Portal</span>
+              </div>
+              <h1 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-slate-900 pt-1">
+                Agricultural Decision Support & Demand Forecasting
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                Probabilistic demand forecasting &amp; strategic crop advisory to assist farmgate planning.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl text-xs space-y-1 text-right">
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">CONFIDENCE SCORE</p>
+              <p className="text-emerald-700 font-extrabold text-base">88% Advisory</p>
+              <p className="text-[10px] text-slate-400 font-medium">Continuously recalibrated</p>
+            </div>
+          </div>
+
+          {/* 3 TOP PILL TABS */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => setSubTab('advisor')}
+              className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
+                subTab === 'advisor'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 ring-2 ring-emerald-600/20'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+              }`}
+            >
+              <span>🌱</span> Next Season Crop Advisor
+            </button>
+
+            <button
+              onClick={() => setSubTab('demand_trends')}
+              className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
+                subTab === 'demand_trends'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 ring-2 ring-emerald-600/20'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+              }`}
+            >
+              <span>📈</span> Market Demand Trends
+            </button>
+
+            <button
+              onClick={() => setSubTab('chat')}
+              className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
+                subTab === 'chat'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20 ring-2 ring-emerald-600/20'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+              }`}
+            >
+              <span>💬</span> Interactive SETU Advisor Chat
+            </button>
+          </div>
+
+          {/* ADVISORY DISCLAIMER PILL */}
+          <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 text-xs text-amber-950 flex items-start gap-2.5 font-medium shadow-xs">
+            <span className="text-base leading-none">🛡️</span>
+            <p>
+              <strong className="font-bold text-amber-900">AI Advisory Notice:</strong> Predictions represent probabilistic market guidance based on historical APMC mandi data and active procurement contracts. Cultivation plans should factor in local micro-climate and diversified buyer channels.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {demandCrops.map((c, i) => (
-            <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-sm">
+        {/* SUB-VIEW 1: 🌱 NEXT SEASON CROP ADVISOR */}
+        {subTab === 'advisor' && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            
+            {/* REGION & SEASON FILTER CONTROLS */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-lg text-slate-900">{c.name}</h3>
-                <span className={`text-xs font-bold px-3 py-1 rounded-full border ${c.color}`}>
-                  {c.badge}
-                </span>
+                <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                  <span>⚙️</span> Region & Season Target Selector
+                </h3>
+                <span className="text-xs text-slate-500 font-medium">Real-time Demand Model v2.4</span>
               </div>
 
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between border-b border-slate-100 pb-2">
-                  <span className="text-slate-500 font-medium">{t.marketDemand.currentDemand}:</span>
-                  <span className="text-slate-900 font-bold">{c.level}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* State (Pre-selected) */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">State</label>
+                  <select 
+                    value={selectedState} 
+                    disabled 
+                    className="w-full bg-slate-100 border border-slate-300 rounded-xl px-3.5 py-3 text-xs font-bold text-slate-700 cursor-not-allowed"
+                  >
+                    <option value="Andhra Pradesh">Andhra Pradesh ▼</option>
+                  </select>
                 </div>
-                <div className="flex justify-between border-b border-slate-100 pb-2">
-                  <span className="text-slate-500 font-medium">{t.marketDemand.potentialShortage}:</span>
-                  <span className="text-amber-700 font-bold">{c.supply}</span>
+
+                {/* District */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">District</label>
+                  <select 
+                    value={selectedDistrict}
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    className="w-full bg-white border border-slate-300 hover:border-emerald-500 rounded-xl px-3.5 py-3 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer"
+                  >
+                    <option value="Visakhapatnam">Visakhapatnam ▼</option>
+                    <option value="Krishna">Krishna ▼</option>
+                    <option value="Guntur">Guntur ▼</option>
+                    <option value="East Godavari">East Godavari ▼</option>
+                  </select>
+                </div>
+
+                {/* Season */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">Season</label>
+                  <select 
+                    value={selectedSeason}
+                    onChange={(e) => setSelectedSeason(e.target.value)}
+                    className="w-full bg-white border border-slate-300 hover:border-emerald-500 rounded-xl px-3.5 py-3 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer"
+                  >
+                    <option value="Kharif 2027">Kharif 2027 ▼</option>
+                    <option value="Rabi 2026-27">Rabi 2026-27 ▼</option>
+                    <option value="Zaid 2027">Zaid 2027 ▼</option>
+                  </select>
+                </div>
+
+                {/* Action Button */}
+                <div className="flex items-end">
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={isAnalyzing}
+                    className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        <span>Analyzing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>🔍</span>
+                        <span>Analyze Next Season Demand</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+
+            {/* FORECASTED DEMAND MATRIX */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="font-display font-extrabold text-xl text-slate-900">
+                    Forecasted Demand Matrix ({selectedDistrict} — {selectedSeason})
+                  </h2>
+                  <p className="text-xs text-slate-500">Predicted procurement volume & recommendation scoring based on regional buyer commitments.</p>
+                </div>
+                <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold px-3 py-1 rounded-full hidden sm:inline-block">
+                  4 Crops Forecasted
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {matrixItems.map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    className="bg-white border border-slate-200 hover:border-emerald-500 rounded-3xl p-6 space-y-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                  >
+                    <div className="space-y-3">
+                      {/* Crop & Icon Header */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <span className="text-3xl">{item.icon}</span>
+                          <div>
+                            <h3 className="font-extrabold text-lg text-slate-900">{item.crop}</h3>
+                            <span className="text-[10px] text-slate-500 font-semibold">Recommended Fit</span>
+                          </div>
+                        </div>
+                        <span className={`text-[11px] font-extrabold px-2.5 py-1 rounded-full border ${
+                          item.demandLevel === 'HIGH' || item.demandLevel === 'VERY HIGH'
+                            ? 'bg-red-50 text-red-700 border-red-200'
+                            : item.demandLevel === 'MEDIUM'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}>
+                          {item.demandLevel}
+                        </span>
+                      </div>
+
+                      {/* Demand Progress Bar */}
+                      <div className="space-y-1.5 pt-1">
+                        <div className="flex justify-between text-xs font-bold">
+                          <span className="text-slate-600">Expected Demand:</span>
+                          <span className="text-slate-900">{item.demandPct}%</span>
+                        </div>
+                        <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              item.demandPct >= 80 ? 'bg-emerald-500' : item.demandPct >= 60 ? 'bg-amber-500' : 'bg-slate-400'
+                            }`}
+                            style={{ width: `${item.demandPct}%` }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Expected Price Trend */}
+                      <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 space-y-1 text-xs">
+                        <div className="flex justify-between items-center">
+                          <span className="text-slate-500 font-medium">Price Trend:</span>
+                          <span className={`font-extrabold text-sm ${
+                            item.priceTrendType === 'up' ? 'text-emerald-600' : item.priceTrendType === 'down' ? 'text-red-600' : 'text-slate-700'
+                          }`}>
+                            {item.priceTrend}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center pt-1 border-t border-slate-200/60">
+                          <span className="text-slate-500 font-medium">Recommendation Score:</span>
+                          <span className="font-extrabold text-slate-900 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                            {item.score}/100
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Best Fit Badge */}
+                    <div className="pt-2 border-t border-slate-100">
+                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl block text-center truncate">
+                        🎯 Best Fit: {item.bestFit}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* EXPLAINABLE DECISION SUPPORT CARD */}
+            <div className="bg-white border border-emerald-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+              <div className="flex items-center space-x-3 border-b border-slate-100 pb-4">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md shadow-emerald-600/20">
+                  🤖
+                </div>
+                <div>
+                  <h3 className="font-display font-extrabold text-xl text-slate-900">
+                    🤖 SETU Strategic Crop Recommendation (Decision Support)
+                  </h3>
+                  <p className="text-xs text-emerald-700 font-bold">Probabilistic Advisory for {selectedDistrict} — {selectedSeason}</p>
+                </div>
+              </div>
+
+              {/* Summary */}
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium bg-slate-50 p-4 rounded-2xl border border-slate-200 italic">
+                "Consider allocating a moderate portion of available acreage toward Tomato and Onion for Kharif 2027 based on projected urban retail deficits. We advise maintaining diversified crop allocations to hedge against localized price volatility."
+              </p>
+
+              {/* Expandable Explainability Accordion */}
+              <div className="border border-slate-200 rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setExplainOpen(!explainOpen)}
+                  className="w-full bg-slate-50 hover:bg-slate-100 p-4 text-left font-bold text-xs sm:text-sm text-slate-800 flex items-center justify-between transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <span>💡</span> Why this recommendation &amp; Risk Safeguards
+                  </span>
+                  <span className="text-slate-500 font-extrabold">{explainOpen ? '▲ Hide' : '▼ Expand'}</span>
+                </button>
+
+                {explainOpen && (
+                  <div className="p-4 sm:p-5 bg-white space-y-3 text-xs sm:text-sm text-slate-700 border-t border-slate-200 animate-in fade-in duration-150">
+                    <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
+                      <span className="text-emerald-600 font-bold text-base">✔</span>
+                      <p className="font-semibold text-emerald-950">Demand Trend: Regional mandi arrivals projected 18% below anticipated urban demand.</p>
+                    </div>
+                    <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
+                      <span className="text-emerald-600 font-bold text-base">✔</span>
+                      <p className="font-semibold text-emerald-950">Channel Diversification: 3 local processing units + 8 retail co-ops actively seeking forward contracts.</p>
+                    </div>
+                    <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
+                      <span className="text-emerald-600 font-bold text-base">✔</span>
+                      <p className="font-semibold text-emerald-950">Risk Mitigation: Multi-buyer matching on AgriConnect provides alternative off-take channels if localized spot prices fluctuate.</p>
+                    </div>
+                    <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
+                      <span className="text-emerald-600 font-bold text-base">✔</span>
+                      <p className="font-semibold text-emerald-950">Dynamic Recalibration: Forecasts automatically update every 14 days as new acreage and planting data become available.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Suggested Action Plan (Step-by-Step) */}
+              <div className="space-y-3 pt-2">
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                  <span>📋</span> Suggested Action Plan (Step-by-Step Execution)
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-emerald-50/50 border border-emerald-200 p-4 rounded-2xl space-y-1.5">
+                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                      1
+                    </span>
+                    <h5 className="font-extrabold text-xs text-slate-900">Reserve Seed Procurement</h5>
+                    <p className="text-xs text-slate-600 font-medium">Reserve nursery seeds by March 15 to ensure high-germination variety access.</p>
+                  </div>
+
+                  <div className="bg-emerald-50/50 border border-emerald-200 p-4 rounded-2xl space-y-1.5">
+                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                      2
+                    </span>
+                    <h5 className="font-extrabold text-xs text-slate-900">Pre-list Planned Acreage</h5>
+                    <p className="text-xs text-slate-600 font-medium">Pre-list planned acreage on AgriConnect to match pre-harvest bulk demand.</p>
+                  </div>
+
+                  <div className="bg-emerald-50/50 border border-emerald-200 p-4 rounded-2xl space-y-1.5">
+                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                      3
+                    </span>
+                    <h5 className="font-extrabold text-xs text-slate-900">Lock Floor Price</h5>
+                    <p className="text-xs text-slate-600 font-medium">Lock minimum floor price via Smart Escrow pre-orders before harvesting.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* QUICK FAQ / JURY DEFENSE CARD */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+              <button
+                onClick={() => setFaqOpen(!faqOpen)}
+                className="w-full text-left flex items-center justify-between font-display font-extrabold text-lg text-slate-900 transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <span>❓</span> How AgriConnect Protects Farmers if Market Demand Shifts
+                </span>
+                <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                  {faqOpen ? '▲ Hide Defense Details' : '▼ View Safeguards'}
+                </span>
+              </button>
+
+              {faqOpen && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t border-slate-100 text-xs animate-in fade-in duration-150">
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+                    <h5 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                      <span>⚡</span> Dynamic Adjustments
+                    </h5>
+                    <p className="text-slate-600 font-medium leading-relaxed">
+                      Real-time demand updates before planting cycles conclude.
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+                    <h5 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                      <span>🏬</span> Multi-Channel Off-Take
+                    </h5>
+                    <p className="text-slate-600 font-medium leading-relaxed">
+                      Automatic routing to institutional processors if spot retail demand softens.
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+                    <h5 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
+                      <span>🔒</span> Pre-Harvest Escrow Matching
+                    </h5>
+                    <p className="text-slate-600 font-medium leading-relaxed">
+                      Option to lock minimum floor price commitments with verified bulk buyers early.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* SUB-VIEW 2: 📈 MARKET DEMAND TRENDS */}
+        {subTab === 'demand_trends' && (
+          <div className="space-y-8 animate-in fade-in duration-200">
+            
+            {/* COMMODITY SELECTOR PILLS & HORIZON TOGGLE */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="font-display font-extrabold text-xl text-slate-900">
+                    Market Demand Trends & Procurement Curve
+                  </h2>
+                  <p className="text-xs text-slate-500">Track 7-Day & Monthly regional demand vs. supply curves to identify deficit windows.</p>
+                </div>
+
+                {/* Horizon Selector */}
+                <div className="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-bold">
+                  <button
+                    onClick={() => setTimeHorizon('7day')}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      timeHorizon === '7day' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    7-Day Forecast
+                  </button>
+                  <button
+                    onClick={() => setTimeHorizon('30day')}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      timeHorizon === '30day' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Monthly Forecast
+                  </button>
+                </div>
+              </div>
+
+              {/* Commodity Selector Pills */}
+              <div className="flex gap-2.5 overflow-x-auto pb-1 pt-2">
+                {['Tomato', 'Onion', 'Brinjal', 'Capsicum', 'Ginger'].map((crop) => (
+                  <button
+                    key={crop}
+                    onClick={() => setSelectedCommodity(crop)}
+                    className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
+                      selectedCommodity === crop
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                    }`}
+                  >
+                    {crop === 'Tomato' ? '🍅' : crop === 'Onion' ? '🧅' : crop === 'Brinjal' ? '🍆' : crop === 'Capsicum' ? '🫑' : '🫚'} {crop}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* DEMAND VS SUPPLY CURVE CHART CARD */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
+                  <span>📊</span> {selectedCommodity} Demand vs. Supply Projection ({timeHorizon === '7day' ? '7-Day View' : 'Monthly View'})
+                </h3>
+                <span className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold px-3 py-1 rounded-full">
+                  Avg Benchmark: {commodityTrend.avgPrice}
+                </span>
+              </div>
+
+              {/* Chart Canvas */}
+              <div style={{ position: 'relative', width: '100%', height: '320px' }}>
+                <canvas id="demandChart" ref={demandChartRef}></canvas>
+              </div>
+
+              {/* Callout Badges Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className="bg-red-50/70 border border-red-200 p-4 rounded-2xl space-y-1">
+                  <div className="flex items-center space-x-2 text-red-800 font-extrabold text-xs">
+                    <span>🔥</span>
+                    <h4>Peak Procurement Days</h4>
+                  </div>
+                  <p className="text-xs text-red-950 font-bold">{commodityTrend.peakDays}</p>
+                  <p className="text-[11px] text-slate-500">Highest wholesale buyer activity expected during this timeframe.</p>
+                </div>
+
+                <div className="bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-1">
+                  <div className="flex items-center space-x-2 text-amber-800 font-extrabold text-xs">
+                    <span>⚠️</span>
+                    <h4>Expected Local Retail Deficit Window</h4>
+                  </div>
+                  <p className="text-xs text-amber-950 font-bold">{commodityTrend.deficitWindow}</p>
+                  <p className="text-[11px] text-slate-500">Favorable selling window with premium floor price potential.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* SUB-VIEW 3: 💬 INTERACTIVE SETU ADVISOR CHAT */}
+        {subTab === 'chat' && (
+          <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm flex flex-col h-[650px] animate-in fade-in duration-200">
+            
+            {/* EMBEDDED CHAT HEADER */}
+            <div className="bg-emerald-600 p-5 text-white flex items-center justify-between shadow-sm">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-2xl">
+                  ✨
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base flex items-center gap-2">
+                    SETU AI Advisor Chat <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
+                  </h3>
+                  <p className="text-xs text-emerald-100 font-medium">Powered by Gemini • Real-time Agronomic & Market Intelligence</p>
+                </div>
+              </div>
+              <span className="text-xs font-bold bg-emerald-700/60 px-3 py-1 rounded-full border border-emerald-400/30">
+                Online • {userName || 'Ramesh Reddy'} ({userRole.toUpperCase()})
+              </span>
+            </div>
+
+            {/* QUICK PROMPTS CHIPS */}
+            <div className="bg-slate-100 p-3 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-xs no-scrollbar">
+              <span className="text-slate-500 font-bold whitespace-nowrap text-[11px] uppercase tracking-wider pl-1">Quick Prompts:</span>
+              {quickPrompts.map((promptText, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => onSendMessage(promptText)}
+                  className="px-3.5 py-1.5 bg-white hover:bg-emerald-50 hover:border-emerald-300 text-slate-800 font-semibold rounded-xl border border-slate-200 whitespace-nowrap shadow-xs transition-colors cursor-pointer"
+                >
+                  {promptText}
+                </button>
+              ))}
+            </div>
+
+            {/* MESSAGES BODY */}
+            <div className="flex-grow p-6 overflow-y-auto space-y-4 text-xs sm:text-sm bg-slate-50">
+              {chatMessagesList.map(msg => (
+                <div 
+                  key={msg.id} 
+                  className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[80%] p-4 rounded-3xl shadow-sm ${
+                    msg.sender === 'user' 
+                      ? 'bg-emerald-600 text-white rounded-br-none' 
+                      : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none font-medium'
+                  }`}>
+                    {msg.sender === 'setu' && (
+                      <div className="text-[10px] font-bold text-emerald-600 mb-1 flex items-center gap-1">
+                        <span>✨ SETU AI Advisor</span>
+                      </div>
+                    )}
+                    <p className="leading-relaxed">{msg.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CHAT INPUT BAR */}
+            <div className="p-4 bg-white border-t border-slate-200 flex items-center space-x-3">
+              <button 
+                onClick={onVoiceInput}
+                className={`p-3 rounded-2xl border transition-colors ${
+                  isListening ? 'bg-red-600 border-red-500 text-white animate-pulse' : 'bg-slate-100 border-slate-200 text-emerald-600 hover:bg-emerald-50'
+                }`}
+                title="Voice Input"
+              >
+                🎤
+              </button>
+              <input 
+                type="text"
+                value={setuInput}
+                onChange={(e) => setSetuInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && onSendMessage()}
+                placeholder="Ask SETU about crop advice, market trends, or buyer connections..."
+                className="flex-grow bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs sm:text-sm text-slate-900 outline-none focus:border-emerald-500 focus:bg-white transition-all"
+              />
+              <button 
+                onClick={() => onSendMessage()}
+                className="p-3 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-md shadow-emerald-600/20 transition-colors"
+              >
+                Send ➤
+              </button>
+            </div>
+
+          </div>
+        )}
 
       </div>
     </div>
   );
 }
+
 
 /* =========================================================================
    VIEW 10: SMART LOGISTICS VIEW (UNIFIED LIGHT THEME)
@@ -3917,14 +4637,14 @@ function SetuAiWidget({ t, isOpen, setIsOpen, messages, input, setInput, onSendM
               </>
             ) : (
               <>
-                <button onClick={() => onSendMessage(t.setu.quickProducts)} className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 whitespace-nowrap shadow-xs">
-                  {t.setu.quickProducts}
+                <button onClick={() => onSendMessage("🥦 Check local vegetable freshness & seasonal availability")} className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 whitespace-nowrap shadow-xs">
+                  🥦 Freshness &amp; Seasons
                 </button>
-                <button onClick={() => onSendMessage(t.setu.quickPrices)} className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 whitespace-nowrap shadow-xs">
-                  {t.setu.quickPrices}
+                <button onClick={() => onSendMessage("💰 How much money goes directly to the farmer?")} className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 whitespace-nowrap shadow-xs">
+                  💰 Direct Farmer Payouts
                 </button>
-                <button onClick={() => onSendMessage(t.setu.quickTrack)} className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 whitespace-nowrap shadow-xs">
-                  {t.setu.quickTrack}
+                <button onClick={() => onSendMessage("📍 Show farm locations and produce quality grades")} className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200 whitespace-nowrap shadow-xs">
+                  📍 Farms &amp; Quality Grades
                 </button>
               </>
             )}
